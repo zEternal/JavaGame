@@ -10,16 +10,19 @@ import com.yhtos.games.word.Word;
 
 public class MyCanvas extends Canvas {
 	
-	public List<Word> words = new ArrayList<>();
+	public final List<Word> words = new ArrayList<>();
 
-	private int x = 200;
+	String sss[] = {"ab","abb","abc","ad","aa","ac","ba","cb","bc","j","k"};	
+	/*旧版代码
+	 * private int x = 200;
 	private int y = 10;
 	
 	public void setY(int y) {
 		this.y = y;
 	}
-	
-	public void initUI() {
+	*/
+	/*初始化UI
+	 * public void initUI() {
 		Word word = new Word();
 		word.setWord("w");
 		word.setX(x);
@@ -28,7 +31,7 @@ public class MyCanvas extends Canvas {
 		
 		words.add(word);
 		rondomPutWord();
-	}
+	}*/
 	
 	@Override
 	public void paint(Graphics g) {
@@ -40,17 +43,18 @@ public class MyCanvas extends Canvas {
 		}
 	}
 	
+	
+	//生成随机X轴位置的字母，X轴随机，字母都是一个
 	public void rondomPutWord() {
-		int x = 100;
 		Word word = new Word();
-		word.setWord("hello");
-		//word.setX(x);
+		word.setWord(sss[(int)(Math.random()*10)]);
 		word.setX((int)(Math.random()*500));
-		word.setY(this.y);
+		word.setY(10);
 		word.setAddY(20);
 		words.add(word);
 	}
 	
+	//绘制字母
 	public void drawAWord(Graphics g, Word word) {
 		g.drawString(word.getWord(), word.getX(), word.getY());
 	}
