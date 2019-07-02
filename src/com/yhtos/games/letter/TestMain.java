@@ -6,11 +6,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
@@ -19,17 +21,19 @@ import com.yhtos.games.word.Word;
 
 public class TestMain {
 	private int sleep_count = 0;	//　记录程序屏幕刷新次数
+			int drop_count = 0;		//  记录掉落	
 	JFrame jFrame;
 	MyCanvas myCanvas;
-	JTextField count_text;
 	JLabel fenShL;
+	JLabel dropJL;
+	JPanel foot;
 	List<Word> fuhe = new ArrayList<Word>();
 	
 	int td = 1000;//时间 
 	
-	boolean kaishi = false;
-	
-	
+	boolean kaishi = false;    //记录开始和暂停
+	boolean go = true;
+	boolean go_init = true;
 	boolean is = false;//记录单词开始
 	int jilu = 0;//记录字母数量
 	String buf = "";
@@ -52,7 +56,7 @@ public class TestMain {
 		
 		myCanvas = new MyCanvas();
 		myCanvas.setBounds(0, 0, 500, 400);
-		myCanvas.setBackground(Color.gray);
+		//myCanvas.setBackground(Color.gray);
 		myCanvas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
@@ -65,17 +69,18 @@ public class TestMain {
 			public void keyPressed(KeyEvent arg0) {
 				// TODO Auto-generated method stub
 				char ch = arg0.getKeyChar();
-				String ss = String.valueOf(ch);
+				//String ss = String.valueOf(ch);
 				System.out.println(ch);
 				switch (ch) {
 				case 'a':
+					System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {//单词开始
 						for(Word word : myCanvas.words) {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("a")) {
 								fuhe.add(word);
-								
+								is = true;
 								if(firstW) {
 									//buf = buf + "a";
 									buf = "a";   //开始
@@ -85,8 +90,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，单词长度："+buf);
 							}
 						}
-						is = true;      //is用于记录单词开始
+						//is = true;      //is用于记录单词开始
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							
 							if(firstW) {
@@ -102,7 +108,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									//fuhe.remove(fuhe.indexOf(fuWord));//在符合的集合中删除
 																		//突然想到既然已经符合了，索性直
@@ -123,23 +129,32 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
+							} else {
+								//if(fuWord.getWord().length() < buf.length()) {
+								if(list_number == fuhe.size()-1) {
 										buf = "";
 										is = false;
 										System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							/*if(list_number == fuhe.size()-1) {
+								buf = "";
+								is = false;
+								System.out.println("超出长度，buf清空,buf:"+buf);
+							}*/
+							list_number ++;
 						}
 						
 					}
 					break;
 				case 'b':
+					System.out.println("进入");
 					firstW = true;
 					if (!is) {
 						for(Word word : myCanvas.words) {
 							if(word.getWord().startsWith("b")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "b";
 									firstW = false;
@@ -147,9 +162,10 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
-						//buf = buf + "b";
+						//is = true;
+						/////buf = buf + "b";
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "b";
@@ -163,7 +179,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -175,23 +191,26 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								}
 							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-									buf = "";
-									is = false;
-									System.out.println("超出长度，buf清空,buf:"+buf);
+								if(list_number == fuhe.size()-1) {
+										buf = "";
+										is = false;
+										System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+						
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'c':
+				case 'c':System.out.println("进入");
 					firstW = true;
 					if (!is) {
 						
 						for(Word word : myCanvas.words) {
 							if(word.getWord().startsWith("c")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "c";
 									firstW = false;
@@ -199,8 +218,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "c";
@@ -214,7 +234,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -226,23 +246,25 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								}
 							} else {
-								if(fuWord.getWord().length() < buf.length()) {
+								if(list_number == fuhe.size()-1) {
 									buf = "";
 									is = false;
 									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'd':
+				case 'd':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						for(Word word : myCanvas.words) {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("d")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "d";
 									firstW = false;
@@ -250,8 +272,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "d";
@@ -265,7 +288,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -277,18 +300,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'e':
+				case 'e':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -296,6 +320,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("e")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "e";
 									firstW = false;
@@ -303,8 +328,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "e";
@@ -318,7 +344,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -330,18 +356,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'f':
+				case 'f':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -349,6 +376,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("f")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "f";
 									firstW = false;
@@ -356,8 +384,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "f";
@@ -371,7 +400,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -383,18 +412,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'g':
+				case 'g':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -402,6 +432,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("g")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "g";
 									firstW = false;
@@ -409,8 +440,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "g";
@@ -424,7 +456,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -436,18 +468,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'h':
+				case 'h':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -455,6 +488,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("h")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "h";
 									firstW = false;
@@ -462,8 +496,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "h";
@@ -477,7 +512,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -489,18 +524,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'i':
+				case 'i':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -508,6 +544,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("i")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "i";
 									firstW = false;
@@ -515,8 +552,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "i";
@@ -530,7 +568,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -542,18 +580,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'j':
+				case 'j':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -561,6 +600,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("j")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "j";
 									firstW = false;
@@ -568,8 +608,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "j";
@@ -583,7 +624,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -595,18 +636,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'k':
+				case 'k':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -614,6 +656,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("k")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "k";
 									firstW = false;
@@ -621,8 +664,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "k";
@@ -636,7 +680,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -648,18 +692,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'l':
+				case 'l':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -667,6 +712,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("l")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "l";
 									firstW = false;
@@ -674,8 +720,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "l";
@@ -689,7 +736,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -701,18 +748,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'm':
+				case 'm':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -720,6 +768,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("m")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "m";
 									firstW = false;
@@ -727,8 +776,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "m";
@@ -742,7 +792,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -754,18 +804,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'n':
+				case 'n':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -773,6 +824,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("n")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "n";
 									firstW = false;
@@ -780,8 +832,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "n";
@@ -795,7 +848,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -807,18 +860,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'o':
+				case 'o':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -826,6 +880,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("o")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "o";
 									firstW = false;
@@ -833,8 +888,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "o";
@@ -848,7 +904,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -860,18 +916,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'p':
+				case 'p':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -879,6 +936,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("p")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "p";
 									firstW = false;
@@ -886,8 +944,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "p";
@@ -901,7 +960,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -913,18 +972,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'q':
+				case 'q':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -932,6 +992,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("q")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "q";
 									firstW = false;
@@ -939,8 +1000,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "q";
@@ -954,7 +1016,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -966,18 +1028,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'r':
+				case 'r':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -985,6 +1048,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("r")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "r";
 									firstW = false;
@@ -992,8 +1056,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "r";
@@ -1007,7 +1072,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -1019,18 +1084,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 's':
+				case 's':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -1038,6 +1104,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("s")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "s";
 									firstW = false;
@@ -1045,8 +1112,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "s";
@@ -1060,7 +1128,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -1072,18 +1140,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 't':
+				case 't':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -1091,6 +1160,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("t")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "t";
 									firstW = false;
@@ -1098,8 +1168,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "t";
@@ -1113,7 +1184,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -1125,18 +1196,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'u':
+				case 'u':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -1144,6 +1216,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("u")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "u";
 									firstW = false;
@@ -1151,8 +1224,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "u";
@@ -1166,7 +1240,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -1178,18 +1252,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'v':
+				case 'v':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -1197,6 +1272,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("v")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "v";
 									firstW = false;
@@ -1204,8 +1280,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "v";
@@ -1219,7 +1296,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -1231,18 +1308,20 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'w':
+				case 'w':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -1250,6 +1329,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("w")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "w";
 									firstW = false;
@@ -1257,8 +1337,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "w";
@@ -1272,7 +1353,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -1284,18 +1365,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'x':
+				case 'x':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -1303,6 +1385,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("x")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "x";
 									firstW = false;
@@ -1310,8 +1393,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "x";
@@ -1325,7 +1409,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -1337,18 +1421,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'y':
+				case 'y':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -1356,6 +1441,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("y")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "y";
 									firstW = false;
@@ -1363,8 +1449,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "y";
@@ -1378,7 +1465,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -1390,18 +1477,19 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
 					break;
-				case 'z':
+				case 'z':System.out.println("进入");
 					firstW = true;//保证每次只存入buf一个字母
 					if (!is) {
 						
@@ -1409,6 +1497,7 @@ public class TestMain {
 							//如果单词的起始字母正确，存入集合
 							if(word.getWord().startsWith("z")) {
 								fuhe.add(word);
+								is = true;
 								if(firstW) {
 									buf = buf + "z";
 									firstW = false;
@@ -1416,8 +1505,9 @@ public class TestMain {
 								System.out.println("首字母符合，"+ word.getWord() +"加入集合，buf："+buf);
 							}
 						}
-						is = true;
+						//is = true;
 					} else {
+						int list_number = 0;
 						for(Word fuWord : fuhe) {
 							if(firstW) {
 								buf = buf + "z";
@@ -1431,7 +1521,7 @@ public class TestMain {
 									System.out.println("单词最终符合，累加器清空,buf:"+buf+";");
 									
 									fraction++;			//分数加
-									count_text.setText(Integer.toString(fraction));//更新分数
+									//更新分数
 									fenShL.setText("分数："+Integer.toString(fraction));
 									fuhe.clear();//清空集合		
 									System.out.println("清前的集合"+myCanvas.words);
@@ -1443,13 +1533,14 @@ public class TestMain {
 									System.out.println("部分符合::"+fuWord.getWord()+";;;;buf::"+buf+";;");
 								} 
 								
-							}  else {
-								if(fuWord.getWord().length() < buf.length()) {
-										buf = "";
-										is = false;
-										System.out.println("超出长度，buf清空,buf:"+buf);
+							}   else {
+								if(list_number == fuhe.size()-1) {
+									buf = "";
+									is = false;
+									System.out.println("超出长度，buf清空,buf:"+buf);
 								}
 							}
+							list_number ++;
 						}
 						
 					}
@@ -1464,33 +1555,30 @@ public class TestMain {
 		jFrame.add(myCanvas);
 		//setKeyboardListener();
 		
-		fenShL = new JLabel();
-		fenShL.setText("分数：");
-		fenShL.setBounds(10, 500, 50, 30);
-		jFrame.add(fenShL);
+		foot = new JPanel();
+		//foot.setBackground(Color.RED);
+		foot.setLayout(null);
+		foot.setBounds(0, 400, 500, 100);
+		jFrame.add(foot);
 		
-		count_text = new JTextField();
-		count_text.setBounds(300, 460, 60, 60);
-		count_text.setText("0");
-		jFrame.add(count_text);	
-		
-		JButton star = new JButton("开始");
-		star.setBounds(100, 460, 200, 50);
-		star.addActionListener(new ActionListener() {
+			fenShL = new JLabel();
+			fenShL.setText("分数：0");
+			fenShL.setBounds(120, 0, 50, 30);
+			foot.add(fenShL);
 			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				Thread thread = new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						//myCanvas.initUI();
-						
-						//产生一个随机数 111
-						/**///myCanvas.rondomPutWord();
-						while (true) {
+			dropJL = new JLabel();
+			dropJL.setText("丢失：0");
+			dropJL.setBounds(200, 0, 50, 30);
+			foot.add(dropJL);
+					////////****////////
+			Thread tttt = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO 自动生成的方法存根
+					while (go) {
+						while (kaishi) {
+							System.out.println("程序执行");
 							//不断的产生随机数  222
 							if(sleep_count % 8 == 0) {
 								myCanvas.rondomPutWord();
@@ -1499,8 +1587,24 @@ public class TestMain {
 								if(td	>	50)
 									td -= 20;      //时间每过一段秒，单词生成时间就减20毫秒
 							}
-							for(Word word : myCanvas.words) {
+							/*for(Word word : myCanvas.words) {
+								if(word.getY()+word.getAddY() > 390) {
+									myCanvas.words.remove(myCanvas.words.indexOf(word));
+									continue;
+								}
+								word.setY(word.getY() + word.getAddY());
+							}*/
+							/////上述在遍历时删除会报异常，，于是采用迭代器
+							Iterator<Word> iterator = myCanvas.words.iterator();
+							while(iterator.hasNext()) {
+								Word word = iterator.next();
+								if(word.getY()+word.getAddY() > 390) {
+									iterator.remove();
+									drop_count ++;
+									dropJL.setText("丢失："+Integer.toString(drop_count));
+								}  else {
 									word.setY(word.getY() + word.getAddY());
+								}
 							}
 							try {
 								sleep_count++;
@@ -1510,15 +1614,48 @@ public class TestMain {
 							}
 							myCanvas.repaint();
 						}
+						System.out.println("已经暂停，等待开始");
 					}
-				});
-				thread.start();
+					System.out.println("游戏线程执行到最后，即将软销毁");
+				}
+			});			
+
+		
+		JButton star = new JButton("开始");
+		star.setBounds(0, 0, 100, 30);
+		star.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				if(go_init) {
+						tttt.start();
+						go_init = false;
+				}
+				if(kaishi) {
+					kaishi = false;
+					star.setText("开始");
+				}else {
+					kaishi = true;
+					star.setText("暂停");
+				}
+			}
+		});
+		foot.add(star);
+		
+		JButton rstar = new JButton("重玩");
+		rstar.setBounds(0, 60, 100, 30);
+		rstar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO 自动生成的方法存根
 				
 			}
 		});
-		jFrame.add(star);
+		//foot.add(rstar);
 		
 		jFrame.setVisible(true);
+		
 		
 	}
 

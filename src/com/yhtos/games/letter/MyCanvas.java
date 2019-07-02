@@ -31,6 +31,8 @@ public class MyCanvas extends Canvas {
 		// TODO Auto-generated method stub
 		super.paint(g);
 		
+		g.drawLine(0, 390, 500, 390);
+		
 		for(Word w : words) {
 			drawAWord(g, w);
 		}
@@ -41,7 +43,7 @@ public class MyCanvas extends Canvas {
 	public void rondomPutWord() {
 		Word word = new Word();
 		word.setWord(sss[(int)(Math.random()*10)]);
-		word.setX((int)(Math.random()*500));
+		word.setX((int)(Math.random()*450));
 		word.setY(12);
 		word.setAddY(12);
 		words.add(word);
