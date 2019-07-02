@@ -12,15 +12,8 @@ public class MyCanvas extends Canvas {
 	
 	public final List<Word> words = new ArrayList<>();
 
-	String sss[] = {"ab","abb","abc","ad","aa","ac","ba","cb","bc","j","k"};	
-	/*¾É°æ´úÂë
-	 * private int x = 200;
-	private int y = 10;
-	
-	public void setY(int y) {
-		this.y = y;
-	}
-	*/
+	String sss[] = {"abanda","discerpa","picklea","otisa","moora","jukea","hemin","form","exalt","rest","strip"};	
+
 	/*³õÊ¼»¯UI
 	 * public void initUI() {
 		Word word = new Word();
@@ -49,8 +42,8 @@ public class MyCanvas extends Canvas {
 		Word word = new Word();
 		word.setWord(sss[(int)(Math.random()*10)]);
 		word.setX((int)(Math.random()*500));
-		word.setY(10);
-		word.setAddY(20);
+		word.setY(12);
+		word.setAddY(12);
 		words.add(word);
 	}
 	
